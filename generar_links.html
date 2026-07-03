@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Enlaces - XV Mayli Guadalupe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7E57C2;
+      --primary-light: #D4B8E0;
+      --accent: #C8A951;
+      --bg: #faf7fc;
+      --card-bg: #ffffff;
+      --text: #2c2536;
+      --text-muted: #6a5e78;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(126, 87, 194, 0.05);
+      border: 1px solid rgba(126, 87, 194, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid rgba(126, 87, 194, 0.2);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      background-color: #fdfcff;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(126, 87, 194, 0.1);
+      background-color: #ffffff;
+    }
+
+    .result-box {
+      background: #f7f3fb;
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-top: 2rem;
+      border: 1px dashed var(--primary-light);
+    }
+
+    .generated-url {
+      font-family: monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      background: white;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid rgba(126, 87, 194, 0.1);
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button, .btn {
+      flex: 1;
+      padding: 0.8rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-copy {
+      background-color: #f0ebf7;
+      color: var(--primary);
+    }
+
+    .btn-copy:hover {
+      background-color: var(--primary-light);
+    }
+
+    .btn-whatsapp {
+      background-color: #25D366;
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #128C7E;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+    }
+
+    .btn-add {
+      background-color: var(--primary);
+      color: white;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-add:hover {
+      background-color: #673AB7;
+      transform: translateY(-2px);
+    }
+
+    .history-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(126, 87, 194, 0.05);
+      border: 1px solid rgba(126, 87, 194, 0.1);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(126, 87, 194, 0.1);
+      padding-bottom: 0.75rem;
+    }
+
+    .history-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .btn-export {
+      background: #f0ebf7;
+      border: 1px solid rgba(126, 87, 194, 0.15);
+      border-radius: 6px;
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.35rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-export:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-clear {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 0.85rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .btn-clear:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .guest-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .guest-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(126, 87, 194, 0.05);
+    }
+
+    .guest-item:last-child {
+      border-bottom: none;
+    }
+
+    .guest-info h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .guest-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .guest-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      padding: 0.4rem;
+      background: #f7f3fb;
+      border: 1px solid rgba(126, 87, 194, 0.1);
+      border-radius: 6px;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .btn-icon:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-icon.delete {
+      color: #e53935;
+    }
+
+    .btn-icon.delete:hover {
+      background: #ffebee;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(126, 87, 194, 0.3);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Floating butterfly background element */
+    .deco-butterfly {
+      position: fixed;
+      z-index: -1;
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .actions {
+        flex-direction: column;
+      }
+      .card {
+        padding: 1.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Decorative butterflies -->
+  <svg class="deco-butterfly" style="top: 10%; left: 5%; width: 150px; height: 150px;" viewBox="0 0 100 100" fill="#7E57C2">
+    <path d="M50 42C38 25 8 8 5 35C2 60 32 52 50 50C32 52 2 60 5 35" />
+    <path d="M50 58C32 58 8 65 10 82C12 95 42 78 50 58" />
+    <path d="M50 42C62 25 92 8 95 35C98 60 68 52 50 50" />
+    <path d="M50 58C68 58 92 65 90 82C88 95 58 78 50 58" />
+  </svg>
+  <svg class="deco-butterfly" style="bottom: 10%; right: 5%; width: 200px; height: 200px;" viewBox="0 0 100 100" fill="#C8A951">
+    <path d="M50 42C38 25 8 8 5 35C2 60 32 52 50 50C32 52 2 60 5 35" />
+    <path d="M50 58C32 58 8 65 10 82C12 95 42 78 50 58" />
+    <path d="M50 42C62 25 92 8 95 35C98 60 68 52 50 50" />
+    <path d="M50 58C68 58 92 65 90 82C88 95 58 78 50 58" />
+  </svg>
+
+  <div class="container">
+    <header>
+      <h1>Generador de Enlaces</h1>
+      <p class="subtitle">Personaliza y comparte la invitación de los XV de Mayli Guadalupe</p>
+    </header>
+
+    <div class="card">
+      <div class="form-group">
+        <label for="base-url">URL Base de la Invitación</label>
+        <input type="text" id="base-url" placeholder="https://..." value="">
+      </div>
+
+      <div class="form-group">
+        <label for="guest-name">Nombre del Invitado</label>
+        <input type="text" id="guest-name-input" placeholder="Ej. Familia Martínez o Juan Pérez" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label for="guest-passes">Número de Pases</label>
+        <select id="guest-passes-select">
+          <option value="1">1 Pase</option>
+          <option value="2" selected>2 Pases</option>
+          <option value="3">3 Pases</option>
+          <option value="4">4 Pases</option>
+          <option value="5">5 Pases</option>
+          <option value="6">6 Pases</option>
+          <option value="7">7 Pases</option>
+          <option value="8">8 Pases</option>
+        </select>
+      </div>
+
+      <div class="result-box">
+        <label>Enlace personalizado</label>
+        <div class="generated-url" id="generated-link">Introduce los datos...</div>
+
+        <div class="actions">
+          <button class="btn btn-copy" id="btn-copy-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copiar Enlace
+          </button>
+          <a class="btn btn-whatsapp" id="btn-share-whatsapp" target="_blank" href="#">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.37 5.378 0 12.01 0a11.948 11.948 0 0 1 8.49 3.513 11.947 11.947 0 0 1 3.5 8.497c-.004 6.637-5.378 12.01-12.01 12.01-2.003 0-3.974-.499-5.748-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.858.002-2.634-1.023-5.11-2.885-6.974a9.782 9.782 0 0 0-6.98-2.88c-5.437 0-9.86 4.42-9.864 9.86-.001 2.01.536 3.97 1.554 5.736l-.991 3.616 3.71-.973zm11.233-6.845c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.568-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            Enviar por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <button class="btn btn-add" id="btn-save">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Guardar en Historial
+      </button>
+    </div>
+
+    <div class="history-card">
+      <div class="history-header">
+        <h2 class="history-title">Invitados Registrados</h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn-export" id="btn-export-csv" title="Exportar a CSV para Google Sheets">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            CSV
+          </button>
+          <button class="btn-clear" id="btn-clear-history">Borrar historial</button>
+        </div>
+      </div>
+
+      <div class="guest-list" id="history-list">
+        <!-- Will be populated dynamically -->
+      </div>
+    </div>
+
+    <!-- Bulk Import Section -->
+    <div class="card" style="margin-top:2rem;">
+      <h2 class="history-title" style="margin-bottom:1rem;">Importar Lista de Invitados</h2>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Pega los nombres de los invitados, uno por línea. Se generarán los enlaces automáticamente.</p>
+      <div class="form-group">
+        <label for="bulk-names">Nombres (uno por línea)</label>
+        <textarea id="bulk-names" rows="6" style="width:100%;padding:0.8rem 1rem;border:1.5px solid rgba(126,87,194,0.2);border-radius:8px;font-family:inherit;font-size:0.95rem;resize:vertical;color:var(--text);background-color:#fdfcff;"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="bulk-passes">Pases por defecto</label>
+        <select id="bulk-passes" style="width:100%;padding:0.8rem 1rem;border:1.5px solid rgba(126,87,194,0.2);border-radius:8px;font-family:inherit;font-size:1rem;color:var(--text);background-color:#fdfcff;">
+          <option value="1">1 Pase</option>
+          <option value="2" selected>2 Pases</option>
+          <option value="3">3 Pases</option>
+          <option value="4">4 Pases</option>
+          <option value="5">5 Pases</option>
+        </select>
+      </div>
+      <button class="btn btn-add" id="btn-bulk-import">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l-4-4-4 4"/><path d="M12 12v9"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        Importar Todos
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">¡Copiado con éxito!</div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Set default URL base to current domain + path
+      const defaultBase = window.location.origin + window.location.pathname.replace('generar_links.html', '');
+      const baseUrlInput = document.getElementById('base-url');
+      baseUrlInput.value = defaultBase;
+
+      const guestNameInput = document.getElementById('guest-name-input');
+      const guestPassesSelect = document.getElementById('guest-passes-select');
+      const generatedLink = document.getElementById('generated-link');
+      const btnCopyLink = document.getElementById('btn-copy-link');
+      const btnShareWhatsapp = document.getElementById('btn-share-whatsapp');
+      const btnSave = document.getElementById('btn-save');
+      const historyList = document.getElementById('history-list');
+      const btnClearHistory = document.getElementById('btn-clear-history');
+      const toast = document.getElementById('toast');
+
+      let guestHistory = JSON.parse(localStorage.getItem('guest_history_xv')) || [];
+
+      function slugify(text) {
+        return text
+          .toString()
+          .toLowerCase()
+          .normalize('NFD') // remove accents
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+      }
+
+      function updateLink() {
+        const base = baseUrlInput.value.trim();
+        const rawName = guestNameInput.value.trim();
+        const passes = guestPassesSelect.value;
+
+        if (!rawName) {
+          generatedLink.textContent = "Introduce el nombre del invitado...";
+          btnShareWhatsapp.style.pointerEvents = 'none';
+          btnShareWhatsapp.style.opacity = '0.5';
+          btnCopyLink.disabled = true;
+          btnCopyLink.style.opacity = '0.5';
+          return;
+        }
+
+        btnShareWhatsapp.style.pointerEvents = 'auto';
+        btnShareWhatsapp.style.opacity = '1';
+        btnCopyLink.disabled = false;
+        btnCopyLink.style.opacity = '1';
+
+        const slugName = slugify(rawName);
+        
+        // Add trailing slash to base if needed, but watch query parameters
+        let separator = base.includes('?') ? '&' : '?';
+        let url = base;
+        if (!url.endsWith('/') && !url.includes('?') && !url.includes('.html')) {
+          url += '/';
+        }
+        
+        const fullUrl = `${url}${separator}id=${slugName}&pases=${passes}`;
+        generatedLink.textContent = fullUrl;
+
+        // Custom WhatsApp message
+        // Reemplaza los datos según el tono
+        const textMessage = `¡Hola *${rawName}*! Te invito de manera especial a celebrar mis XV años. Aquí puedes ver tu invitación digital personalizada y confirmar tu asistencia: ${fullUrl}`;
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
+        btnShareWhatsapp.href = whatsappUrl;
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2500);
+      }
+
+      function copyToClipboard() {
+        const text = generatedLink.textContent;
+        if (text.startsWith('Introduce')) return;
+
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('¡Enlace copiado al portapapeles!');
+        }).catch(err => {
+          showToast('Error al copiar el enlace');
+        });
+      }
+
+      function saveGuest() {
+        const rawName = guestNameInput.value.trim();
+        const passes = guestPassesSelect.value;
+        const link = generatedLink.textContent;
+
+        if (!rawName || link.startsWith('Introduce')) {
+          showToast('Por favor introduce un nombre válido');
+          return;
+        }
+
+        // Avoid duplicates
+        if (guestHistory.some(g => g.name === rawName)) {
+          showToast('Este invitado ya está registrado');
+          return;
+        }
+
+        const newGuest = {
+          name: rawName,
+          passes: passes,
+          link: link,
+          timestamp: new Date().toLocaleDateString()
+        };
+
+        guestHistory.unshift(newGuest);
+        localStorage.setItem('guest_history_xv', JSON.stringify(guestHistory));
+        renderHistory();
+
+        // Clear input for next guest
+        guestNameInput.value = '';
+        updateLink();
+        showToast('Invitado guardado en el historial');
+      }
+
+      function deleteGuest(index) {
+        guestHistory.splice(index, 1);
+        localStorage.setItem('guest_history_xv', JSON.stringify(guestHistory));
+        renderHistory();
+        showToast('Invitado eliminado');
+      }
+
+      function renderHistory() {
+        historyList.innerHTML = '';
+
+        if (guestHistory.length === 0) {
+          historyList.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 1rem 0;">No hay invitados registrados aún.</p>';
+          return;
+        }
+
+        guestHistory.forEach((guest, index) => {
+          const item = document.createElement('div');
+          item.className = 'guest-item';
+          
+          // Re-create whatsapp share url for historical item
+          const textMessage = `¡Hola *${guest.name}*! Te invito de manera especial a celebrar mis XV años. Aquí puedes ver tu invitación digital personalizada y confirmar tu asistencia: ${guest.link}`;
+          const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
+
+          item.innerHTML = `
+            <div class="guest-info">
+              <h4>${guest.name}</h4>
+              <p>${guest.passes} ${guest.passes == 1 ? 'pase' : 'pases'} • ${guest.timestamp}</p>
+            </div>
+            <div class="guest-actions">
+              <button class="btn-icon" title="Copiar enlace" onclick="copyText('${guest.link}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+              <a href="${waUrl}" target="_blank" class="btn-icon" title="Enviar por WhatsApp" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
+                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.37 5.378 0 12.01 0a11.948 11.948 0 0 1 8.49 3.513 11.947 11.947 0 0 1 3.5 8.497c-.004 6.637-5.378 12.01-12.01 12.01-2.003 0-3.974-.499-5.748-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.858.002-2.634-1.023-5.11-2.885-6.974a9.782 9.782 0 0 0-6.98-2.88c-5.437 0-9.86 4.42-9.864 9.86-.001 2.01.536 3.97 1.554 5.736l-.991 3.616 3.71-.973zm11.233-6.845c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.568-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+              </a>
+              <button class="btn-icon delete" title="Eliminar" onclick="deleteItem(${index})">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
+            </div>
+          `;
+          
+          historyList.appendChild(item);
+        });
+      }
+
+      window.copyText = function(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('¡Enlace copiado!');
+        });
+      };
+
+      window.deleteItem = function(index) {
+        if(confirm('¿Seguro que quieres eliminar este invitado del historial?')) {
+          deleteGuest(index);
+        }
+      };
+
+      // Listeners
+      guestNameInput.addEventListener('input', updateLink);
+      guestPassesSelect.addEventListener('change', updateLink);
+      baseUrlInput.addEventListener('input', updateLink);
+      btnCopyLink.addEventListener('click', copyToClipboard);
+      btnSave.addEventListener('click', saveGuest);
+      
+      btnClearHistory.addEventListener('click', () => {
+        if (confirm('¿Seguro que quieres borrar todo el historial de invitados?')) {
+          guestHistory = [];
+          localStorage.removeItem('guest_history_xv');
+          renderHistory();
+          showToast('Historial borrado');
+        }
+      });
+
+      // Initial
+      updateLink();
+      renderHistory();
+
+      // =============================================
+      // CSV EXPORT
+      // =============================================
+      const btnExportCSV = document.getElementById('btn-export-csv');
+      
+      btnExportCSV.addEventListener('click', function() {
+        if (guestHistory.length === 0) {
+          showToast('No hay invitados para exportar');
+          return;
+        }
+
+        // BOM for Excel UTF-8 compatibility
+        let csv = '\uFEFF';
+        csv += 'Nombre,Pases,Enlace,Confirmó,Fecha Confirmación\n';
+
+        guestHistory.forEach(guest => {
+          // Escape commas in name and link
+          const name = '"' + guest.name.replace(/"/g, '""') + '"';
+          const link = '"' + guest.link.replace(/"/g, '""') + '"';
+          csv += `${name},${guest.passes},${link},,\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'invitados_xv.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        showToast('CSV descargado — impórtalo en Google Sheets');
+      });
+
+      // =============================================
+      // BULK IMPORT
+      // =============================================
+      const btnBulkImport = document.getElementById('btn-bulk-import');
+      const bulkNamesArea = document.getElementById('bulk-names');
+      const bulkPassesSelect = document.getElementById('bulk-passes');
+
+      btnBulkImport.addEventListener('click', function() {
+        const rawText = bulkNamesArea.value.trim();
+        if (!rawText) {
+          showToast('Escribe al menos un nombre');
+          return;
+        }
+
+        const base = baseUrlInput.value.trim();
+        const defaultPasses = bulkPassesSelect.value;
+        const names = rawText.split('\n').map(n => n.trim()).filter(n => n.length > 0);
+        let added = 0;
+
+        names.forEach(rawName => {
+          // Skip duplicates
+          if (guestHistory.some(g => g.name.toLowerCase() === rawName.toLowerCase())) {
+            return;
+          }
+
+          const slugName = slugify(rawName);
+          let url = base;
+          if (!url.endsWith('/') && !url.includes('?') && !url.includes('.html')) {
+            url += '/';
+          }
+          const separator = url.includes('?') ? '&' : '?';
+          const fullUrl = `${url}${separator}id=${slugName}&pases=${defaultPasses}`;
+
+          guestHistory.unshift({
+            name: rawName,
+            passes: defaultPasses,
+            link: fullUrl,
+            timestamp: new Date().toLocaleDateString()
+          });
+          added++;
+        });
+
+        if (added > 0) {
+          localStorage.setItem('guest_history_xv', JSON.stringify(guestHistory));
+          renderHistory();
+          bulkNamesArea.value = '';
+          showToast(`${added} invitado(s) importados`);
+        } else {
+          showToast('Todos los nombres ya estaban registrados');
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
