@@ -683,29 +683,60 @@
      11. IMAGE PROTECTION (block right-click / long-press)
      ============================================= */
   function initImageProtection() {
-    // Select all images and the hero frame
-    var protectedElements = document.querySelectorAll('#hero-frame img, #hero-frame');
+    // Block context menu on the hero shield overlay
+    var shield = document.querySelector('.hero-img-shield');
+    if (shield) {
+      shield.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+      // Block long-press callout on iOS/Android
+      shield.addEventListener('touchstart', function () { }, { passive: true });
+    }
 
-    protectedElements.forEach(function (el) {
-      // Block right-click context menu
-      el.addEventListener('contextmenu', function (e) {
+    // Block context menu on the hero frame itself
+    var heroFrame = document.getElementById('hero-frame');
+    if (heroFrame) {
+      heroFrame.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+    }
+
+    // Protect ALL images on the page (dresscode, swimsuit, guestbook, etc.)
+    var allImages = document.querySelectorAll('img');
+    allImages.forEach(function (img) {
+      img.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
+      img.addEventListener('dragstart', function (e) {
         e.preventDefault();
         return false;
       });
+      // Apply inline protection styles
+      img.style.webkitTouchCallout = 'none';
+      img.style.webkitUserSelect = 'none';
+      img.style.userSelect = 'none';
+    });
 
-      // Block long-press on mobile (iOS/Android)
-      el.addEventListener('touchstart', function (e) {
-        // Only prevent default if touching the image directly
-        if (e.target.tagName === 'IMG') {
-          e.target.style.webkitTouchCallout = 'none';
-        }
-      }, { passive: true });
-
-      // Prevent drag
-      el.addEventListener('dragstart', function (e) {
+    // Global fallback: block context menu if target is or contains an image
+    document.addEventListener('contextmenu', function (e) {
+      var target = e.target;
+      if (target.tagName === 'IMG' ||
+          target.classList.contains('hero-img-shield') ||
+          target.classList.contains('hero-bg-img') ||
+          target.closest('#hero-frame') ||
+          target.closest('.dresscode-item') ||
+          target.closest('.swim-item') ||
+          target.closest('.guestbook-image-wrapper')) {
         e.preventDefault();
+        e.stopPropagation();
         return false;
-      });
+      }
     });
   }
 

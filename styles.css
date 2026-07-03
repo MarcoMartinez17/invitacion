@@ -98,6 +98,11 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+  /* Global image protection — prevent long-press save on mobile */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 button {
@@ -374,17 +379,34 @@ a {
   filter: blur(8px);
 }
 
-.hero-frame img {
+.hero-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 43% center;
-  /* Image protection */
+  background-size: cover;
+  background-position: 43% center;
+  background-repeat: no-repeat;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   pointer-events: none;
+}
+
+/* Invisible shield on top — blocks browser from detecting any image underneath */
+.hero-img-shield {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .hero-placeholder {
