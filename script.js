@@ -683,31 +683,26 @@
      11. IMAGE PROTECTION (block right-click / long-press)
      ============================================= */
   function initImageProtection() {
-    // Block context menu on the hero shield overlay
-    var shield = document.querySelector('.hero-img-shield');
-    if (shield) {
+    // --- 1. Block all .img-shield elements (dresscode, swimsuit, guestbook) ---
+    var shields = document.querySelectorAll('.img-shield, .hero-img-shield');
+    shields.forEach(function (shield) {
+      // Block right-click / long-press menu
       shield.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         e.stopPropagation();
         return false;
       });
-      // Block long-press callout on iOS/Android
-      shield.addEventListener('touchstart', function () { }, { passive: true });
-    }
-
-    // Block context menu on the hero frame itself
-    var heroFrame = document.getElementById('hero-frame');
-    if (heroFrame) {
-      heroFrame.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
+      // Non-passive touchstart to allow preventDefault — kills long-press callout
+      shield.addEventListener('touchstart', function (e) {
         e.stopPropagation();
-        return false;
-      });
-    }
+      }, { passive: false });
+      shield.addEventListener('touchend', function (e) {
+        e.stopPropagation();
+      }, { passive: false });
+    });
 
-    // Protect ALL images on the page (dresscode, swimsuit, guestbook, etc.)
-    var allImages = document.querySelectorAll('img');
-    allImages.forEach(function (img) {
+    // --- 2. Block context menu on ALL img elements ---
+    document.querySelectorAll('img').forEach(function (img) {
       img.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -717,22 +712,19 @@
         e.preventDefault();
         return false;
       });
-      // Apply inline protection styles
-      img.style.webkitTouchCallout = 'none';
-      img.style.webkitUserSelect = 'none';
-      img.style.userSelect = 'none';
     });
 
-    // Global fallback: block context menu if target is or contains an image
+    // --- 3. Global document-level fallback ---
     document.addEventListener('contextmenu', function (e) {
-      var target = e.target;
-      if (target.tagName === 'IMG' ||
-          target.classList.contains('hero-img-shield') ||
-          target.classList.contains('hero-bg-img') ||
-          target.closest('#hero-frame') ||
-          target.closest('.dresscode-item') ||
-          target.closest('.swim-item') ||
-          target.closest('.guestbook-image-wrapper')) {
+      var t = e.target;
+      if (
+        t.tagName === 'IMG' ||
+        t.classList.contains('img-shield') ||
+        t.classList.contains('hero-img-shield') ||
+        t.classList.contains('hero-bg-img') ||
+        t.closest('.img-shield-wrap') ||
+        t.closest('#hero-frame')
+      ) {
         e.preventDefault();
         e.stopPropagation();
         return false;
