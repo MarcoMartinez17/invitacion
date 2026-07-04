@@ -91,7 +91,9 @@ body {
       transparent 40px,
       rgba(126, 87, 194, 0.025) 40px,
       rgba(126, 87, 194, 0.025) 41px);
-  background-attachment: fixed;
+  /* background-attachment: fixed disabled — causes severe scroll jank on mobile
+     (forces full-page re-rasterization on every scroll frame) */
+  background-attachment: scroll;
 }
 
 img {
@@ -140,6 +142,12 @@ button {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ---------- MAIN INVITATION CONTAINER ---------- */
+#invitation {
+  position: relative;
+  overflow: hidden;  /* contain absolutely-positioned floating butterflies */
 }
 
 /* ---------- UTILITY ---------- */
@@ -356,11 +364,10 @@ a {
   content: '';
   position: absolute;
   top: -50%;
-  left: -60%;
+  left: 0;
   width: 50%;
   height: 200%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transform: skewX(-20deg);
   animation: shimmerSlide 4s ease-in-out infinite 2s;
 }
 
@@ -1692,8 +1699,9 @@ a {
 }
 
 .rsvp-passes strong {
-  color: var(--gold-dark);
-  font-size: 1.2rem;
+  color: var(--morado-elegante);
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 /* Slider Track */
@@ -1878,19 +1886,22 @@ a {
 }
 
 /* =============================================
-   FLOATING BUTTERFLIES (dynamic, JS-generated)
+   FLOATING BUTTERFLIES — lightweight ambient deco
+   Gentle drift only, no complex flight paths.
+   Uses position:absolute on <main> to avoid
+   per-frame compositing overhead of fixed layers.
    ============================================= */
 .floating-butterfly {
-  position: fixed;
+  position: absolute;
   pointer-events: none;
-  z-index: 5;
-  opacity: 0;
-  animation: butterflyLife var(--bf-duration, 12s) ease-in-out var(--bf-delay, 0s) infinite;
+  z-index: 1;
+  opacity: var(--bf-opacity, 0.18);
+  animation: butterflyGentleDrift var(--bf-duration, 14s) ease-in-out var(--bf-delay, 0s) infinite;
 }
 
 .floating-butterfly svg {
-  width: var(--bf-size, 30px);
-  height: var(--bf-size, 30px);
+  width: var(--bf-size, 20px);
+  height: var(--bf-size, 20px);
 }
 
 /* =============================================
@@ -2028,12 +2039,12 @@ a {
 
 @keyframes shimmerSlide {
   0% {
-    left: -60%;
+    transform: translateX(-100%) skewX(-20deg);
   }
 
   50%,
   100% {
-    left: 120%;
+    transform: translateX(350%) skewX(-20deg);
   }
 }
 
@@ -2092,49 +2103,21 @@ a {
   }
 }
 
-@keyframes butterflyLife {
+/* Gentle butterfly drift — only 3 stops, tiny sway, GPU-friendly */
+@keyframes butterflyGentleDrift {
   0% {
-    opacity: 0;
-    transform: translate(0, 0) rotate(0deg) scale(0.5);
-  }
-
-  10% {
-    opacity: var(--bf-opacity, 0.35);
-    transform: translate(var(--bf-x1, 10px), var(--bf-y1, -20px)) rotate(5deg) scale(1);
-  }
-
-  30% {
-    transform: translate(var(--bf-x2, -15px), var(--bf-y2, -60px)) rotate(-8deg) scale(0.95);
+    transform: translate(0, 0) rotate(0deg);
+    opacity: var(--bf-opacity, 0.18);
   }
 
   50% {
-    transform: translate(var(--bf-x3, 20px), var(--bf-y3, -100px)) rotate(4deg) scale(1.05);
-  }
-
-  70% {
-    transform: translate(var(--bf-x4, -10px), var(--bf-y4, -150px)) rotate(-5deg) scale(0.9);
-  }
-
-  90% {
-    opacity: var(--bf-opacity, 0.35);
-    transform: translate(var(--bf-x5, 5px), var(--bf-y5, -200px)) rotate(3deg) scale(0.8);
+    transform: translate(var(--bf-sway-x, 6px), var(--bf-sway-y, -10px)) rotate(var(--bf-sway-rot, 3deg));
+    opacity: calc(var(--bf-opacity, 0.18) * 1.4);
   }
 
   100% {
-    opacity: 0;
-    transform: translate(var(--bf-x6, 0px), var(--bf-y6, -250px)) rotate(0deg) scale(0.5);
-  }
-}
-
-@keyframes wingFlap {
-
-  0%,
-  100% {
-    transform: scaleX(1);
-  }
-
-  50% {
-    transform: scaleX(0.6);
+    transform: translate(0, 0) rotate(0deg);
+    opacity: var(--bf-opacity, 0.18);
   }
 }
 
@@ -2157,6 +2140,21 @@ a {
 
   .countdown-box {
     min-width: 85px;
+  }
+}
+
+/* =============================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   ============================================= */
+@media (max-width: 767px) {
+  /* Slow down the ring rotation to reduce paint cycles */
+  .xv-ring-frame {
+    animation-duration: 90s;
+  }
+
+  /* On mobile, make butterflies even subtler */
+  .floating-butterfly {
+    --bf-opacity: 0.12;
   }
 }
 

@@ -573,23 +573,29 @@
   }
 
   /* =============================================
-     9. FLOATING BUTTERFLIES (ambient decoration)
+     9. FLOATING BUTTERFLIES (lightweight ambient decoration)
+     Gentle sway only — no complex flight paths, no SVG wing-flap.
+     Appended to &lt;main&gt; as position:absolute for zero compositing cost.
      ============================================= */
   function initFloatingButterflies() {
-    var body = document.body;
-    var colors = ['#D4B8E0', '#9B72AA', '#C8A951', '#E8D48B', '#B896C9'];
+    var container = DOM.invitation || document.body;
+    var colors = ['#D4B8E0', '#B896C9', '#9B72AA', '#dcd3ff', '#e6e6fa'];
 
-    for (var i = 0; i < CONFIG.floatingButterflyCount; i++) {
+    // More butterflies is fine now — each one is just a tiny static SVG
+    // with a simple 3-stop CSS animation (no animateTransform)
+    var count = 8;
+
+    for (var i = 0; i < count; i++) {
       var bf = document.createElement('div');
       bf.className = 'floating-butterfly';
 
       var color = colors[Math.floor(Math.random() * colors.length)];
-      var size = 18 + Math.random() * 22;
-      var startLeft = Math.random() * 100;
-      var startTop = 10 + Math.random() * 80;
-      var duration = 10 + Math.random() * 10;
-      var delay = Math.random() * 8;
-      var opacity = 0.2 + Math.random() * 0.2;
+      var size = 12 + Math.random() * 10;       // 12-22px (small)
+      var startLeft = 5 + Math.random() * 90;    // 5%-95% horizontal
+      var startTop = 3 + Math.random() * 94;     // spread across full page
+      var duration = 12 + Math.random() * 10;    // 12-22s (slow)
+      var delay = Math.random() * 10;
+      var opacity = 0.10 + Math.random() * 0.15; // 0.10-0.25 (very subtle)
 
       bf.style.left = startLeft + '%';
       bf.style.top = startTop + '%';
@@ -598,33 +604,21 @@
       bf.style.setProperty('--bf-delay', delay + 's');
       bf.style.setProperty('--bf-opacity', String(opacity));
 
-      // Random flight path points
-      bf.style.setProperty('--bf-x1', (Math.random() * 40 - 20) + 'px');
-      bf.style.setProperty('--bf-y1', -(10 + Math.random() * 30) + 'px');
-      bf.style.setProperty('--bf-x2', (Math.random() * 60 - 30) + 'px');
-      bf.style.setProperty('--bf-y2', -(30 + Math.random() * 50) + 'px');
-      bf.style.setProperty('--bf-x3', (Math.random() * 50 - 25) + 'px');
-      bf.style.setProperty('--bf-y3', -(60 + Math.random() * 60) + 'px');
-      bf.style.setProperty('--bf-x4', (Math.random() * 40 - 20) + 'px');
-      bf.style.setProperty('--bf-y4', -(100 + Math.random() * 60) + 'px');
-      bf.style.setProperty('--bf-x5', (Math.random() * 30 - 15) + 'px');
-      bf.style.setProperty('--bf-y5', -(140 + Math.random() * 80) + 'px');
-      bf.style.setProperty('--bf-x6', (Math.random() * 20 - 10) + 'px');
-      bf.style.setProperty('--bf-y6', -(180 + Math.random() * 100) + 'px');
+      // Gentle sway parameters — tiny random drift
+      bf.style.setProperty('--bf-sway-x', (Math.random() * 12 - 6) + 'px');
+      bf.style.setProperty('--bf-sway-y', (Math.random() * 10 - 8) + 'px');
+      bf.style.setProperty('--bf-sway-rot', (Math.random() * 6 - 3) + 'deg');
 
+      // Static butterfly SVG — no animateTransform, no wing flap
       bf.innerHTML = '<svg viewBox="0 0 100 100" fill="' + color + '">' +
-        '<path d="M50 42C38 25 8 8 5 35C2 60 32 52 50 50" opacity=".75">' +
-        '<animateTransform attributeName="transform" type="scale" values="1,1;0.6,1;1,1" dur="0.6s" repeatCount="indefinite" additive="sum"/>' +
-        '</path>' +
-        '<path d="M50 58C32 58 8 65 10 82C12 95 42 78 50 58" opacity=".55"/>' +
-        '<path d="M50 42C62 25 92 8 95 35C98 60 68 52 50 50" opacity=".75">' +
-        '<animateTransform attributeName="transform" type="scale" values="1,1;0.6,1;1,1" dur="0.6s" repeatCount="indefinite" additive="sum"/>' +
-        '</path>' +
-        '<path d="M50 58C68 58 92 65 90 82C88 95 58 78 50 58" opacity=".55"/>' +
-        '<ellipse cx="50" cy="50" rx="3" ry="14" opacity=".85"/>' +
+        '<path d="M50 42C38 25 8 8 5 35C2 60 32 52 50 50" opacity=".7"/>' +
+        '<path d="M50 58C32 58 8 65 10 82C12 95 42 78 50 58" opacity=".5"/>' +
+        '<path d="M50 42C62 25 92 8 95 35C98 60 68 52 50 50" opacity=".7"/>' +
+        '<path d="M50 58C68 58 92 65 90 82C88 95 58 78 50 58" opacity=".5"/>' +
+        '<ellipse cx="50" cy="50" rx="3" ry="14" opacity=".8"/>' +
         '</svg>';
 
-      body.appendChild(bf);
+      container.appendChild(bf);
     }
   }
 
